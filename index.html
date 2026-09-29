@@ -19,7 +19,7 @@ button{cursor:pointer}button.ok{background:var(--ok);color:#fff;border-color:var
 input[type=text],textarea{width:100%;box-sizing:border-box}textarea{min-height:130px}
 .bl{width:auto;min-width:64px;max-width:110px;padding:2px 6px;text-align:center}.bl.g{border-color:var(--ok)}.bl.b{border-color:var(--no)}
 pre{background:var(--cd);border:1px solid var(--ln);border-radius:8px;padding:12px;overflow-x:auto;line-height:2}
-.ln{font-family:ui-monospace,Menlo,monospace;font-size:.9rem;white-space:pre-wrap;margin:10px 0 0}.cm{width:100%;box-sizing:border-box;font-size:.9rem}#pbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:6px 0}.pb{height:12px;background:var(--ln);border-radius:6px;overflow:hidden;display:flex}.pb i{display:block;height:100%}.g1{background:var(--ok)}.r1{background:var(--no)}.sm{font-size:.75rem;padding:3px 9px}.g{color:var(--ok)}.b{color:var(--no)}select{max-width:100%}.row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.ln{font-family:ui-monospace,Menlo,monospace;font-size:.9rem;white-space:pre-wrap;margin:10px 0 0}.cm{width:100%;box-sizing:border-box;font-size:.9rem}#pbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:6px 0}.pb{height:12px;background:var(--ln);border-radius:6px;overflow:hidden;display:flex}.pb i{display:block;height:100%}.g1{background:var(--ok)}.r1{background:var(--no)}.sm{font-size:.75rem;padding:3px 9px}.sl{background:var(--cd);border:2px dashed var(--ln);border-radius:8px;padding:6px 10px;margin:6px auto;text-align:center;cursor:pointer;min-height:44px;box-sizing:border-box}.sl small{display:block;color:var(--mut);font-size:.75rem}.sl.sok{border:2px solid var(--ok)}.sl.sno{border:2px solid var(--no)}.pool{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chip{border-radius:20px}.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}.g{color:var(--ok)}.b{color:var(--no)}select{max-width:100%}.row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
 </style></head><body><main>
 <h1>🎓 Lern-App</h1><div id="pbar"></div><div class="mut" id="st"></div>
 <nav id="nv"></nav><div id="v"></div></main>
@@ -173,18 +173,18 @@ H|Was unterscheidet den Raspberry Pi vom Arduino?|Betriebssystem und GB Speicher
 A|Welche Technik erlaubt nur winzige Nachrichten von 12 Byte?|Sigfox|LoRa|Thread|Matter
 E|Ein Widerstand von 460 Ω liegt an 230 V. Wie groß ist I?|0,5 A|2 A|0,05 A|5 A`;
 let st={k:{},s:{}};try{st=JSON.parse(localStorage.getItem('la')||'')||st}catch(e){}
-st.k=st.k||{};st.s=st.s||{};st.q=st.q||{};st.fr=st.fr||{};
+st.k=st.k||{};st.s=st.s||{};st.q=st.q||{};st.fr=st.fr||{};st.z=st.z||{};
 const MQN=MQ.trim().split('\n').filter(Boolean).length;
 const save=()=>{try{localStorage.setItem('la',JSON.stringify(st))}catch(e){}};
 function rec(m,o,t){const a=st.s[m]||[0,0];st.s[m]=[a[0]+o,a[1]+t];save();head()}
 let rsArm=0;
 function head(){
- const all=[...Object.values(st.k),...Object.values(st.q),...Object.values(st.fr)],tot=C.length+MQN+F.length,ok=all.filter(x=>x===1).length,bad=all.filter(x=>x===0).length,p=x=>(x/tot*100).toFixed(1),s=st.s,f=m=>s[m]?s[m][0]+'/'+s[m][1]:'-';
+ const all=[...Object.values(st.k),...Object.values(st.q),...Object.values(st.fr),...Object.values(st.z)],tot=C.length+MQN+F.length+Z.length,ok=all.filter(x=>x===1).length,bad=all.filter(x=>x===0).length,p=x=>(x/tot*100).toFixed(1),s=st.s,f=m=>s[m]?s[m][0]+'/'+s[m][1]:'-';
  $('#pbar').innerHTML=`<div class="pb" title="Fortschritt"><i class="g1" style="width:${p(ok)}%"></i><i class="r1" style="width:${p(bad)}%"></i></div>`;
- $('#st').innerHTML=`<div><b>${Math.round(ok/tot*100)}% geschafft</b> · <span class="g">${ok} richtig</span> · <span class="b">${bad} zu wiederholen</span> · ${tot-ok-bad} offen</div><div>Rechnen: ${f('r')} · Sketch: ${f('s')} · <button class="sm" id="rs">${rsArm?'Sicher? Nochmal klicken':'Fortschritt zurücksetzen'}</button></div>`;
- $('#rs').onclick=()=>{if(!rsArm){rsArm=1;head();return}rsArm=0;st={k:{},s:{},q:{},fr:{}};save();head();go(cur)};
+ $('#st').innerHTML=`<div><b>${Math.round(ok/tot*100)}% geschafft</b> · <span class="g">${ok} richtig</span> · <span class="b">${bad} zu wiederholen</span> · ${tot-ok-bad} offen</div><div>Rechnen: ${f('r')} · Sketch: ${f('s')} · Zuordnen: ${f('z')} · <button class="sm" id="rs">${rsArm?'Sicher? Nochmal klicken':'Fortschritt zurücksetzen'}</button></div>`;
+ $('#rs').onclick=()=>{if(!rsArm){rsArm=1;head();return}rsArm=0;st={k:{},s:{},q:{},fr:{},z:{}};save();head();go(cur)};
 }
-const V={k:['🃏 Karten',cards],q:['❓ Quiz',quiz],r:['🧮 Rechnen',calc],f:['✍️ Freitext',free],s:['💻 Sketch kommentieren',sketch],l:['📘 Lernblatt',blatt]};
+const V={k:['🃏 Karten',cards],q:['❓ Quiz',quiz],r:['🧮 Rechnen',calc],f:['✍️ Freitext',free],s:['💻 Sketch kommentieren',sketch],z:['🧩 Zuordnen',zuordnen],l:['📘 Lernblatt',blatt]};
 let cur='k';function go(k){cur=k;rsArm=0;[...$('#nv').children].forEach(b=>b.className=b.dataset.k==k?'on':'');V[k][1]()}
 $('#nv').innerHTML=Object.entries(V).map(([k,x])=>`<button data-k="${k}">${x[0]}</button>`).join('');
 $('#nv').onclick=e=>{if(e.target.dataset.k)go(e.target.dataset.k)};
@@ -251,6 +251,36 @@ function sketch(){
  v.innerHTML=sel+`<div class="box"><b>Kommentiere jede Zeile wie in der Klausur.</b><p class="mut">Schreibe kurz, was die Zeile macht. Die App sucht Schlüsselwörter und zeigt danach die Musterkommentare.</p>`+s.l.map((x,j)=>`<div class="ln">${x[0].replace(/</g,'&lt;')}</div>`+(x[1]?`<input type="text" class="cm" data-j="${j}" placeholder="// Kommentar">`:'')).join('')+`<div class="row"><button class="p" id="ck">Prüfen</button></div><div id="fb"></div></div>`;
  $('#sk').onchange=e=>{st.sk=+e.target.value;save();sketch()};
  $('#ck').onclick=()=>{let o=0,t=0;v.querySelectorAll('.cm').forEach(b=>{const x=s.l[b.dataset.j],r=x[1].test(b.value.toLowerCase());t++;if(r)o++;b.classList.add(r?'g':'b');b.insertAdjacentHTML('afterend',`<div class="mut">// ${x[2]}</div>`)});rec('s',o,t);$('#fb').innerHTML=`<p><b>${o} von ${t} Zeilen passend kommentiert.</b> Grüne Felder sind getroffen, rote zeigen Verbesserungsbedarf. Vergleiche mit den Musterkommentaren.</p>`;$('#ck').disabled=true};
+}
+const Z=[
+{n:'Pyramide: Ebenen',h:'Ordne die Ebenen der Automatisierungspyramide (oben 4, unten 0).',p:1,s:['Ebene 4','Ebene 3','Ebene 2','Ebene 1','Ebene 0'],a:['Unternehmensebene','Betriebsleitebene','Prozessleitebene','Steuerungsebene','Feldebene']},
+{n:'Pyramide: Systeme',h:'Welches System gehört auf welche Ebene?',p:1,s:['Unternehmensebene','Betriebsleitebene','Prozessleitebene','Steuerungsebene','Feldebene'],a:['ERP','MES','SCADA','SPS','Sensoren und Aktoren']},
+{n:'Pyramide: Aufgaben',h:'Welche Aufgabe gehört zu welcher Ebene?',p:1,s:['Unternehmensebene','Betriebsleitebene','Prozessleitebene','Steuerungsebene','Feldebene'],a:['Planung, Ressourcen','Fertigungssteuerung','Visualisieren, Überwachen','Steuern, Regeln','Messen, Schalten']},
+{n:'Revolutionen: Schlagwort',h:'Ordne jeder Revolution ihr Schlagwort zu.',s:['Industrie 1.0','Industrie 2.0','Industrie 3.0','Industrie 4.0'],a:['Mechanisierung','Elektrifizierung','Automatisierung','Vernetzung']},
+{n:'Revolutionen: Zeit',h:'Wann begann welche Revolution?',s:['Industrie 1.0','Industrie 2.0','Industrie 3.0','Industrie 4.0'],a:['Ende 18. Jh.','Ende 19. Jh.','Anfang 1970er','heute']},
+{n:'CPS: Bausteine',h:'Ordne den Aufgaben im CPS den Baustein zu.',s:['Messen','Handeln','Daten austauschen','Berechnen und Steuern'],a:['Sensoren','Aktoren','Kommunikation','Prozessoren']},
+{n:'Grundbegriffe',h:'Ordne jedem Begriff die passende Beschreibung zu.',s:['CPS','CPPS','IoT','IIoT','Smart Factory','Smart Home'],a:['Vernetzte Einheit aus Software und Mechanik/Elektrik','CPS in Produktionsmaschinen und -anlagen','Global vernetzte Objekte über das Internet','IoT in industriellen Anwendungen','Selbst organisierende, optimierende Produktion','CPS in Gebäuden für Komfort und Energiemanagement']},
+{n:'MQTT: QoS-2-Ablauf',h:'Bringe die Pakete von QoS 2 in die richtige Reihenfolge.',s:['Schritt 1','Schritt 2','Schritt 3','Schritt 4'],a:['PUBLISH','PUBREC','PUBREL','PUBCOMP']},
+{n:'MQTT: Verbindungsmanagement',h:'Welche Funktion beschreibt welchen Begriff?',s:['Last Will Testament','Retained Message','Persistent Session','Keep Alive'],a:['Broker meldet den Ausfall stellvertretend','Neuer Subscriber bekommt sofort den letzten Wert','Verpasste Nachrichten werden nachgeliefert','PINGREQ und PINGRESP halten die Verbindung']},
+{n:'Protokolle: Einsatz',h:'Ordne jedem Protokoll sein typisches Profil zu.',s:['Zigbee','Z-Wave','Sigfox','LoRa','Thread','Matter'],a:['2,4-GHz-Mesh für Smart-Home-Lampen','Sub-GHz-Mesh für Türschlösser und Heizung','12-Byte-Meldungen, z. B. Füllstände','Weitstrecke, z. B. Landwirtschaft','IPv6-Mesh mit Border Router','Herstellerübergreifende Anwendungsschicht']},
+{n:'Stromkreis mit LED',h:'Bringe den Stromkreis in die richtige Reihenfolge (Widerstand vor der LED).',s:['Start','Dann','Dann','Ende'],a:['5-V-Pin','Vorwiderstand','LED','GND']},
+{n:'Vorwiderstand: Rechenweg',h:'Bringe die Rechenschritte in die richtige Reihenfolge.',s:['Schritt 1','Schritt 2','Schritt 3','Schritt 4'],a:['U_R = U_Quelle − U_LED','Strom in Ampere umrechnen','R = U_R / I','Normwert wählen']},
+{n:'Sketch: Reihenfolge',h:'Bringe die Anweisungen des Blink-Sketches in die Ausführungsreihenfolge (setup, dann loop).',s:['1','2','3','4','5','6'],a:['const int ledPin = 13;','pinMode(ledPin, OUTPUT);','digitalWrite(ledPin, HIGH);','delay(1000);','digitalWrite(ledPin, LOW);','delay(1000);']}];
+function zuordnen(){
+ const i=Math.min(st.zi||0,Z.length-1),t=Z[i],n=t.s.length;
+ let chips=shuffle(t.a.map((x,j)=>j)),put=Array(n).fill(null),sel=null,chk=0;
+ function draw(){
+  const used=put.filter(x=>x!==null),pool=chips.filter(j=>!used.includes(j));
+  v.innerHTML=`<select id="zs">${Z.map((z,j)=>`<option value="${j}"${j==i?' selected':''}>${st.z[z.n]===1?'✓ ':''}${z.n}</option>`).join('')}</select><div class="box"><b>${t.h}</b><p class="mut">Tippe erst auf eine Antwort, dann auf das passende Feld. Tippe auf ein gefülltes Feld, um die Antwort zurückzulegen.</p>`
+  +t.s.map((s,k)=>{const c=put[k],cl=chk?(c!==null&&t.a[c]==t.a[k]?' sok':' sno'):'';return `<div class="sl${cl}" data-k="${k}"${t.p?` style="width:${45+55*k/(n-1)}%"`:''}><small>${s}</small><span>${c!==null?t.a[c]:'…'}</span></div>`}).join('')
+  +`<div class="pool">${pool.map(j=>`<button class="chip${sel===j?' on':''}" data-j="${j}">${t.a[j]}</button>`).join('')}</div><div class="row"><button class="p" id="zc">Prüfen</button><button id="zr">Zurücksetzen</button><button id="zn">Nächste Aufgabe</button></div><div id="fb"></div></div>`;
+  $('#zs').onchange=e=>{st.zi=+e.target.value;save();zuordnen()};
+  v.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{sel=sel===+b.dataset.j?null:+b.dataset.j;draw()});
+  v.querySelectorAll('.sl').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;chk=0;if(sel!==null){const old=put[k];put[k]=sel;sel=null}else put[k]=null;draw()});
+  $('#zr').onclick=zuordnen;$('#zn').onclick=()=>{st.zi=(i+1)%Z.length;save();zuordnen()};
+  $('#zc').onclick=()=>{if(put.includes(null)){$('#fb').innerHTML='<p class="b">Bitte zuerst alle Felder füllen.</p>';return}chk=1;const ok=put.filter((c,k)=>t.a[c]==t.a[k]).length;st.z[t.n]=ok==n?1:0;rec('z',ok,n);draw();$('#fb').innerHTML=`<p class="${ok==n?'g':'b'}"><b>${ok} von ${n} richtig${ok==n?' 🎉':''}</b></p>`+(ok<n?'<p class="mut">Rot markierte Felder sind falsch. Tippe darauf, um sie zu ändern.</p>':'')};
+ }
+ draw();
 }
 head();go('k');
 </script><script type="text/plain" id="lb"><!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Lerndokument Klausur: Industrie 4.0, MQTT, Arduino</title><style>
