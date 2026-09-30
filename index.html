@@ -58,6 +58,12 @@ M|MQTT-Client?|Beliebiges Gerät mit MQTT-Bibliothek, kann Publisher und Subscri
 M|MQTT-Topic?|Filter des Brokers, Ebenen mit / getrennt, Groß-/Kleinschreibung zählt
 M|Wofür steht $ am Topic-Anfang?|Reserviert für interne Broker-Statistiken
 M|Topic-Regeln?|Kein / am Anfang, keine Leerzeichen, kurz halten, keine Sonderzeichen oder Umlaute
+M|Topic-Wildcard + (einstufig)?|Ersetzt genau eine Themenebene, nur beim Abonnieren erlaubt
+M|Topic-Wildcard # (mehrstufig)?|Ersetzt alle folgenden Ebenen, steht immer an letzter Stelle
+M|Was abonniert # allein (Root-Wildcard)?|Alle Topics
+M|Dürfen Wildcards beim Senden verwendet werden?|Nein, nur beim Abonnieren
+M|Was abonniert Buerogebaeude/Erdgeschoss/+/Temperatur?|Die Temperatur aller Räume im Erdgeschoss (Serverraum, Besprechungszimmer, BueroChef)
+M|Was abonniert Buerogebaeude/Erdgeschoss/#?|Alle Topics unterhalb von Erdgeschoss, egal wie tief verschachtelt
 M|Welche QoS-Stufen gibt es bei MQTT?|QoS 0 (at most once), QoS 1 (at least once), QoS 2 (exactly once)
 M|QoS 0?|At most once: höchstens einmal, keine Bestätigung, Nachricht kann verloren gehen. Am schnellsten
 M|QoS 1?|At least once: PUBLISH, PUBACK. Duplikate möglich
@@ -125,7 +131,9 @@ const F=[
 ['Beschreibe den Ablauf von QoS 2 Schritt für Schritt.',[['PUBLISH',/publish/],['PUBREC',/pubrec/],['PUBREL',/pubrel/],['PUBCOMP',/pubcomp/],['Zweistufige Bestätigung',/zweistufig|zwei stufen|zweimal/]],'Der Sender schickt PUBLISH. Der Empfänger antwortet mit PUBREC (received). Der Sender folgt mit PUBREL (released), der Empfänger schließt mit PUBCOMP (complete) ab. Dieser zweistufige Ablauf verhindert Verluste und Duplikate.'],
 ['Wann setzt man im IoT einen Mikrocontroller und wann einen Einplatinencomputer ein?',[['Mikrocontroller: Sensoren/Aktoren',/sensor|aktor|led|steuer/],['Arduino oder ESP32',/arduino|esp/],['Einplatinencomputer: Broker/Gateway/Server',/broker|gateway|server|mosquitto|bildverarbeit/],['Raspberry Pi/Linux',/raspberry|linux|betriebssystem/],['Energie oder Kosten',/energie|strom|kosten|günstig/]],'Mikrocontroller (Arduino, ESP32) für einfache, stromsparende Aufgaben wie Sensoren auslesen und Aktoren steuern. Einplatinencomputer (Raspberry Pi) für rechenintensive Aufgaben mit Betriebssystem, z. B. Broker (Mosquitto), Gateway oder Server.'],
 ['Wie schließt man zwei LEDs parallel an einen Arduino an? Was ist zu beachten?',[['Jede LED eigener Vorwiderstand',/eigen|jede|jeweils|zwei widerstände|vorwiderstand/],['Parallelschaltung',/parallel/],['Pin und GND',/pin|gnd|masse/],['Strom durch LED begrenzen',/strom|begrenz|schutz/]],'Jede LED bekommt ihren eigenen Vorwiderstand in Reihe. Die beiden Zweige liegen parallel zwischen Pin/5 V und GND. So fließt durch jede LED der berechnete Strom.'],
-['Erkläre alle drei QoS-Stufen von MQTT mit Namen und Verhalten.',[['QoS 0: höchstens einmal, Verlust möglich',/höchstens|at most|verlust|verloren|keine bestätigung|ohne bestätigung/],['QoS 1: mindestens einmal, PUBACK, Duplikate',/mindestens|at least|puback|duplikat/],['QoS 2: genau einmal, PUBREC/PUBREL/PUBCOMP',/genau|exactly|pubrec|pubrel|pubcomp/],['Aufwand/Bandbreite/Geschwindigkeit',/bandbreite|aufwand|schnell|langsam/]],'QoS 0 (at most once): höchstens einmal, keine Bestätigung, Nachricht kann verloren gehen, am schnellsten. QoS 1 (at least once): mindestens einmal, PUBLISH/PUBACK, Duplikate möglich. QoS 2 (exactly once): genau einmal über PUBLISH, PUBREC, PUBREL, PUBCOMP, langsamer und mit mehr Bandbreite.']];
+['Erkläre alle drei QoS-Stufen von MQTT mit Namen und Verhalten.',[['QoS 0: höchstens einmal, Verlust möglich',/höchstens|at most|verlust|verloren|keine bestätigung|ohne bestätigung/],['QoS 1: mindestens einmal, PUBACK, Duplikate',/mindestens|at least|puback|duplikat/],['QoS 2: genau einmal, PUBREC/PUBREL/PUBCOMP',/genau|exactly|pubrec|pubrel|pubcomp/],['Aufwand/Bandbreite/Geschwindigkeit',/bandbreite|aufwand|schnell|langsam/]],'QoS 0 (at most once): höchstens einmal, keine Bestätigung, Nachricht kann verloren gehen, am schnellsten. QoS 1 (at least once): mindestens einmal, PUBLISH/PUBACK, Duplikate möglich. QoS 2 (exactly once): genau einmal über PUBLISH, PUBREC, PUBREL, PUBCOMP, langsamer und mit mehr Bandbreite.'],
+['Erkläre die MQTT-Wildcards + und # mit je einem Beispiel.',[['+ ersetzt eine Ebene',/\+|plus|einstufig|eine ebene|genau eine/],['# ersetzt alle folgenden Ebenen',/#|raute|mehrstufig|alle folgenden|nachfolgend/],['# steht am Ende',/ende|letzt/],['Nur beim Abonnieren',/abonnier|subscri/],['Beispiel-Topic',/erdgeschoss|buero|temperatur|serverraum|haus/]],'+ ersetzt genau eine Ebene (z. B. Buerogebaeude/Erdgeschoss/+/Temperatur). # ersetzt alle folgenden Ebenen und steht immer am Ende (z. B. Buerogebaeude/Erdgeschoss/#). # allein abonniert alle Topics. Wildcards gehen nur beim Abonnieren, nicht beim Senden.'],
+['Welche Topics werden mit Buerogebaeude/Erdgeschoss/+/Temperatur und mit Buerogebaeude/Erdgeschoss/# abonniert?',[['+ : Temperatur der Räume',/temperatur/],['Räume: Serverraum, Besprechungszimmer, BueroChef',/serverraum|besprechung|buerochef|räume/],['# : auch CO2/Luftfeuchtigkeit',/co2|luftfeuchtigkeit|weitere|alle/],['# : alle Ebenen darunter',/darunter|tief|verschachtelt|alle ebenen|nachfolgend/]],'Mit + werden nur die Temperatur-Topics aller Räume im Erdgeschoss abonniert (Serverraum, Besprechungszimmer, BueroChef). Mit # werden alle Topics unterhalb von Erdgeschoss abonniert, also auch Luftfeuchtigkeit und CO2, egal wie tief verschachtelt.']];
 const MQ=`M|Ein Temperatursensor soll seinen Ausfall melden. Was nutzt du?|Last Will Testament|Retained Message|Keep Alive|QoS 2
 M|Neue Subscriber sollen sofort den letzten Wert sehen. Was nutzt du?|Retained Message|Last Will Testament|PINGREQ|Persistent Session
 M|Welche QoS-Stufe eignet sich für automatische Bestellungen ohne Duplikate?|QoS 2|QoS 1|Keine, Duplikate sind egal|Nur Keep Alive
@@ -178,7 +186,14 @@ E|Ein Widerstand von 460 Ω liegt an 230 V. Wie groß ist I?|0,5 A|2 A|0,05 A|5 
 M|Welche QoS-Stufe gibt keine Zustellgarantie?|QoS 0|QoS 1|QoS 2|Keine, alle garantieren die Zustellung
 M|Was bedeutet At most once?|Höchstens einmal, Verlust möglich|Mindestens einmal|Genau einmal|Immer mehrfach
 M|Welche QoS-Stufe ist am schnellsten und braucht am wenigsten Bandbreite?|QoS 0|QoS 1|QoS 2|Alle gleich
-M|Wofür genügt QoS 0?|Häufige, unkritische Messwerte, bei denen ein Verlust egal ist|Automatische Bestellungen|Zahlungen|Nachrichten, die nie doppelt ankommen dürfen`;
+M|Wofür genügt QoS 0?|Häufige, unkritische Messwerte, bei denen ein Verlust egal ist|Automatische Bestellungen|Zahlungen|Nachrichten, die nie doppelt ankommen dürfen
+M|Welches Zeichen ersetzt genau eine Topic-Ebene?|+|#|$|/
+M|Welches Zeichen ersetzt alle folgenden Topic-Ebenen?|#|+|$|/
+M|Wo steht # in einem Topic?|Immer an letzter Stelle|Am Anfang|In der Mitte|Egal wo
+M|Wann dürfen Wildcards genutzt werden?|Nur beim Abonnieren|Nur beim Senden|Beim Senden und Abonnieren|Nie
+M|Welches Topic deckt Buerogebaeude/Erdgeschoss/+/Temperatur ab?|Buerogebaeude/Erdgeschoss/Serverraum/Temperatur|Buerogebaeude/Erdgeschoss/Serverraum/Luftfeuchtigkeit|Buerogebaeude/Obergeschoss/Serverraum/Temperatur|Buerogebaeude/Erdgeschoss/Serverraum/Temperatur/Sensor1
+M|Welches Topic deckt Buerogebaeude/Erdgeschoss/# NICHT ab?|Buerogebaeude/Obergeschoss/Serverraum/Temperatur|Buerogebaeude/Erdgeschoss/BueroChef/CO2|Buerogebaeude/Erdgeschoss/Serverraum/Luftfeuchtigkeit|Buerogebaeude/Erdgeschoss/Besprechungszimmer/Temperatur
+M|Was abonniert das Topic # allein?|Alle Topics (Root-Wildcard)|Nur das oberste Topic|Nichts|Nur Statistik-Topics`;
 let st={k:{},s:{}};try{st=JSON.parse(localStorage.getItem('la')||'')||st}catch(e){}
 st.k=st.k||{};st.s=st.s||{};st.q=st.q||{};st.fr=st.fr||{};st.z=st.z||{};
 const MQN=MQ.trim().split('\n').filter(Boolean).length;
@@ -191,7 +206,7 @@ function head(){
  $('#st').innerHTML=`<div><b>${Math.round(ok/tot*100)}% geschafft</b> · <span class="g">${ok} richtig</span> · <span class="b">${bad} zu wiederholen</span> · ${tot-ok-bad} offen</div><div>Rechnen: ${f('r')} · Sketch: ${f('s')} · Zuordnen: ${f('z')} · <button class="sm" id="rs">${rsArm?'Sicher? Nochmal klicken':'Fortschritt zurücksetzen'}</button></div>`;
  $('#rs').onclick=()=>{if(!rsArm){rsArm=1;head();return}rsArm=0;st={k:{},s:{},q:{},fr:{},z:{}};save();head();go(cur)};
 }
-const V={k:['🃏 Karten',cards],q:['❓ Quiz',quiz],r:['🧮 Rechnen',calc],f:['✍️ Freitext',free],s:['💻 Sketch kommentieren',sketch],z:['🧩 Zuordnen',zuordnen],l:['📘 Lernblatt',blatt]};
+const V={k:['🃏 Karten',cards],q:['❓ Quiz',quiz],r:['🧮 Rechnen',calc],f:['✍️ Freitext',free],s:['💻 Sketch kommentieren',sketch],z:['🧩 Zuordnen',zuordnen],l:['📘 Lernblatt',blatt],a:['🏁 Abschluss',abschluss]};
 let cur='k';function go(k){cur=k;rsArm=0;[...$('#nv').children].forEach(b=>b.className=b.dataset.k==k?'on':'');V[k][1]()}
 $('#nv').innerHTML=Object.entries(V).map(([k,x])=>`<button data-k="${k}">${x[0]}</button>`).join('');
 $('#nv').onclick=e=>{if(e.target.dataset.k)go(e.target.dataset.k)};
@@ -270,6 +285,8 @@ const Z=[
 {n:'MQTT: QoS-2-Ablauf',h:'Bringe die Pakete von QoS 2 in die richtige Reihenfolge.',s:['Schritt 1','Schritt 2','Schritt 3','Schritt 4'],a:['PUBLISH','PUBREC','PUBREL','PUBCOMP']},
 {n:'MQTT: QoS-Namen',h:'Ordne jeder QoS-Stufe ihren Namen zu.',s:['QoS 0','QoS 1','QoS 2'],a:['At most once','At least once','Exactly once']},
 {n:'MQTT: QoS-Verhalten',h:'Ordne jeder QoS-Stufe ihr Verhalten zu.',s:['QoS 0','QoS 1','QoS 2'],a:['Ohne Bestätigung, Verlust möglich','PUBACK, Duplikate möglich','PUBREC, PUBREL, PUBCOMP, keine Duplikate']},
+{n:'MQTT: Wildcards',h:'Ordne jeder Wildcard ihre Bedeutung zu.',s:['+','#','# allein (Root)'],a:['Genau eine Ebene','Alle folgenden Ebenen, immer am Ende','Alle Topics']},
+{n:'MQTT: Wildcard-Topics',h:'Was wird mit dem jeweiligen Topic abonniert?',s:['Buerogebaeude/Erdgeschoss/+/Temperatur','Buerogebaeude/Erdgeschoss/#','#'],a:['Temperatur aller Räume im Erdgeschoss','Alles unterhalb von Erdgeschoss','Alle Topics']},
 {n:'MQTT: Verbindungsmanagement',h:'Welche Funktion beschreibt welchen Begriff?',s:['Last Will Testament','Retained Message','Persistent Session','Keep Alive'],a:['Broker meldet den Ausfall stellvertretend','Neuer Subscriber bekommt sofort den letzten Wert','Verpasste Nachrichten werden nachgeliefert','PINGREQ und PINGRESP halten die Verbindung']},
 {n:'Protokolle: Einsatz',h:'Ordne jedem Protokoll sein typisches Profil zu.',s:['Zigbee','Z-Wave','Sigfox','LoRa','Thread','Matter'],a:['2,4-GHz-Mesh für Smart-Home-Lampen','Sub-GHz-Mesh für Türschlösser und Heizung','12-Byte-Meldungen, z. B. Füllstände','Weitstrecke, z. B. Landwirtschaft','IPv6-Mesh mit Border Router','Herstellerübergreifende Anwendungsschicht']},
 {n:'Stromkreis mit LED',h:'Bringe den Stromkreis in die richtige Reihenfolge (Widerstand vor der LED).',s:['Start','Dann','Dann','Ende'],a:['5-V-Pin','Vorwiderstand','LED','GND']},
@@ -290,6 +307,12 @@ function zuordnen(){
   $('#zc').onclick=()=>{if(put.includes(null)){$('#fb').innerHTML='<p class="b">Bitte zuerst alle Felder füllen.</p>';return}chk=1;const ok=put.filter((c,k)=>t.a[c]==t.a[k]).length;st.z[t.n]=ok==n?1:0;rec('z',ok,n);draw();$('#fb').innerHTML=`<p class="${ok==n?'g':'b'}"><b>${ok} von ${n} richtig${ok==n?' 🎉':''}</b></p>`+(ok<n?'<p class="mut">Rot markierte Felder sind falsch. Tippe darauf, um sie zu ändern.</p>':'')};
  }
  draw();
+}
+function abschluss(){
+ const mq=MQ.trim().split('\n').filter(Boolean).map(l=>{const[t,q]=l.split('|');return{t,r:st.q[q]}}),all=[...mq,...C.map((c,i)=>({t:c.t,r:st.k[i]}))];
+ const rows=Object.entries(T).map(([k,nm])=>{const a=all.filter(x=>x.t==k),ok=a.filter(x=>x.r===1).length,bad=a.filter(x=>x.r===0).length,n=a.length;return{nm,n,ok,bad,p:n?ok/n:0}}),weak=[...rows].sort((a,b)=>a.p-b.p)[0],c1=o=>Object.values(o).filter(x=>x===1).length;
+ v.innerHTML=`<div class="box"><h3>🏁 Abschluss: Deine Auswertung</h3><p class="mut">Karten und Quizfragen je Thema. Grün = richtig, rot = zu wiederholen, grau = offen.</p>`+rows.map(r=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between"><span>${r.nm}</span><span>${r.ok}/${r.n}</span></div><div class="pb"><i class="g1" style="width:${r.ok/r.n*100}%"></i><i class="r1" style="width:${r.bad/r.n*100}%"></i></div></div>`).join('')+`<p>Freitext geschafft: <b>${c1(st.fr)}/${F.length}</b> · Zuordnen geschafft: <b>${c1(st.z)}/${Z.length}</b></p><p><b>Als Nächstes üben:</b> ${weak.nm} (${Math.round(weak.p*100)} % geschafft)</p><div class="row"><button class="p" id="aq">Quiz: nur offene und falsche</button><button id="ac">Karten: nur nicht gewusste</button></div></div>`;
+ $('#aq').onclick=()=>{go('q');quiz('miss')};$('#ac').onclick=()=>{st.f='miss';save();go('k')};
 }
 head();go('k');
 </script><script type="text/plain" id="lb"><!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Lerndokument Klausur: Industrie 4.0, MQTT, Arduino</title><style>
@@ -506,6 +529,8 @@ figcaption{font-size:.85rem;color:var(--mut);margin-top:.3rem}
 <li><strong>Topic:</strong> Filter des Brokers, Ebenen mit <code>/</code> getrennt. <strong>Groß-/Kleinschreibung zählt.</strong> <code>$</code> am Anfang ist für Broker-Statistik reserviert.</li>
 <li><strong>Topic-Regeln:</strong> kein <code>/</code> am Anfang · keine Leerzeichen · kurz halten · keine Sonderzeichen/Umlaute.</li>
 </ul>
+<h3>Wildcards (nur beim Abonnieren, nie beim Senden) ✅</h3>
+<table><tr><th>Zeichen</th><th>Bedeutung</th><th>Beispiel</th></tr><tr><td><code>+</code></td><td>einstufig: ersetzt genau eine Ebene</td><td><code>Buerogebaeude/Erdgeschoss/+/Temperatur</code> → Serverraum, Besprechungszimmer, BueroChef</td></tr><tr><td><code>#</code></td><td>mehrstufig: ersetzt alle folgenden Ebenen, steht <b>immer am Ende</b></td><td><code>Buerogebaeude/Erdgeschoss/#</code> → alles darunter (auch Luftfeuchtigkeit, CO₂)</td></tr><tr><td><code>#</code> allein</td><td>Root-Wildcard: alle Topics</td><td><code>#</code></td></tr></table>
 <h3>QoS (Quality of Service)</h3>
 <table>
 <thead>
